@@ -14,12 +14,11 @@ class Photo extends React.Component {
     return (
       <Card style={{ width: "18rem" }}>
         <Card.Img variant="top" src={this.props.details.src.original} />
+
         <Card.Body>
           <Card.Title>{this.props.details.alt}</Card.Title>
           <Card.Text></Card.Text>
-          <Button variant="primary">Check out</Button>
         </Card.Body>
-        <a href={pexelsSite}> Photos provided by Pexels </a>
       </Card>
     );
   }

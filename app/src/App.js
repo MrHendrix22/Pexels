@@ -26,9 +26,8 @@ class App extends React.Component {
   }
 
   searchForPhoto = () => {
-    client.photos.search({ query, per_page: 1 }).then(
+    client.photos.search({ query, per_page: 10 }).then(
       (photo) => {
-        console.log(photo);
         this.setState({
           photos: photo.photos,
           isLoaded: true,
@@ -44,13 +43,12 @@ class App extends React.Component {
   };
 
   getPhoto = (photo, index) => {
-
-    return(
+    return (
       <Col key={index}>
-      <Photo details={photo}></Photo>
+        <Photo details={photo}></Photo>
       </Col>
     );
-  }
+  };
 
   render() {
     const { error, isLoaded, photos } = this.state;
@@ -69,11 +67,13 @@ class App extends React.Component {
       );
     } else {
       return (
-        <Container>
-             <Row>
-              {this.state.photos.map(this.getPhoto)}
-             </Row>
-        </Container>
+        <div className="App">
+          <header className="App-header">
+            <Container className="mt-3">
+              <Row>{photos.map(this.getPhoto)}</Row>
+            </Container>
+          </header>
+        </div>
       );
     }
   }
