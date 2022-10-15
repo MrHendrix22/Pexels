@@ -11,7 +11,8 @@ function Photo() {
       <Card.Body>
         <Card.Title>Card Title</Card.Title>
         <Card.Text>
-          This is the storyline
+          <a href="https://www.pexels.com"> Photos provided by Pexels
+          </a>
         </Card.Text>
         <Button variant="primary">Check out</Button>
       </Card.Body>
