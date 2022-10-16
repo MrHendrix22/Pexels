@@ -7,29 +7,30 @@ import { createClient } from "pexels";
 const client = createClient(
   "563492ad6f91700001000001825382c3f9f54537b004bec5091b15b1"
 );
-const query = "Nature";
 
 class App extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       title: "Nature",
       photos: [],
       isLoaded: false,
       error: null,
+      currentPage: 1,
+      picsPerPage: 10,
     };
   }
 
   componentDidMount() {
-    this.searchForPhoto();
+    this.fetchPhotos();
   }
-
-  searchForPhoto = () => {
-    client.photos.search({ query, per_page: 10 }).then(
+  fetchPhotos = () => {
+    
+    client.photos.curated({ per_page: 80 }).then(
       (photo) => {
         this.setState({
-          photos: photo.photos,
+          photos: photo.photos.filter(pic => (!!pic.alt)),
           isLoaded: true,
         });
       },
@@ -52,6 +53,20 @@ class App extends React.Component {
 
   render() {
     const { error, isLoaded, photos } = this.state;
+    const indexOfLastPic = this.state.currentPage * this.state.picsPerPage;
+    const indexOfFirstPic = indexOfLastPic - this.state.picsPerPage;
+    const currentPics = this.state.photos.slice(indexOfFirstPic, indexOfLastPic);
+
+    const pageNumbers = [];
+
+    for (let i = 1; i <= Math.ceil(this.state.photos.length / this.state.picsPerPage); i++) {
+      pageNumbers.push(i);
+    }
+
+    const setPage = (pageNum) => {
+      this.setState({ currentPage: pageNum })
+    }
+
 
     if (error) {
       return (
@@ -67,15 +82,25 @@ class App extends React.Component {
       );
     } else {
       return (
-        <div className="App">
+        <><div className="App">
           <header className="App-header">
             <Container className="mt-3">
-              <Row>{photos.map(this.getPhoto)}</Row>
+              <Row>{currentPics.map(this.getPhoto)}</Row>
             </Container>
           </header>
-        </div>
+        </div><div className="w-full flex justify-around">
+            {
+              pageNumbers.map((pageNum, index) => (
+                <span key={index} className={pageNum === this.state.currentPage ? "cursor-pointer flex items-center justify-center w-12 h-12 border-2 rounded-full bg-blue-500 text-white" : "cursor-pointer flex items-center justify-center w-12 h-12 border-2 rounded-full"} onClick={() => { setPage(pageNum) }}>
+                  {pageNum}
+                </span>
+              ))
+            }
+          </div></>
       );
     }
+
+
   }
 }
 
