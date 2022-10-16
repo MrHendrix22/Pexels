@@ -5,7 +5,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import { createClient } from "pexels";
 
 const client = createClient(
-  "563492ad6f91700001000001825382c3f9f54537b004bec5091b15b1"
+  //hide api key
 );
 
 class App extends React.Component {
