@@ -3,9 +3,12 @@ import "./App.css";
 import Photo from "./components/Photo";
 import { Col, Container, Row } from "react-bootstrap";
 import { createClient } from "pexels";
+import Navigation from "./components/Navigation";
+import Search from "./components/Search";
 
 const client = createClient(
   //hide api key
+ 
 );
 
 class App extends React.Component {
@@ -13,7 +16,7 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      title: "Nature",
+      title: "",
       photos: [],
       isLoaded: false,
       error: null,
@@ -46,16 +49,23 @@ class App extends React.Component {
   getPhoto = (photo, index) => {
     return (
       <Col key={index}>
-        <Photo details={photo}></Photo>
+        <Photo details={photo} changePage={this.changePage}></Photo>
       </Col>
     );
   };
 
+  changePage = (pageName, title="Nature") => {
+     this.setState({
+      pageName: pageName,
+      title: title,
+     })
+  }
+
   render() {
-    const { error, isLoaded, photos } = this.state;
-    const indexOfLastPic = this.state.currentPage * this.state.picsPerPage;
-    const indexOfFirstPic = indexOfLastPic - this.state.picsPerPage;
-    const currentPics = this.state.photos.slice(indexOfFirstPic, indexOfLastPic);
+    const { error, isLoaded, photos, currentPage, picsPerPage } = this.state;
+    const indexOfLastPic = currentPage * picsPerPage;
+    const indexOfFirstPic = indexOfLastPic - picsPerPage;
+    const currentPics = photos.slice(indexOfFirstPic, indexOfLastPic);
 
     const pageNumbers = [];
 
@@ -66,41 +76,48 @@ class App extends React.Component {
     const setPage = (pageNum) => {
       this.setState({ currentPage: pageNum })
     }
-
-
-    if (error) {
-      return (
-        <Container>
-          <div>Error: {error.message} </div>
-        </Container>
-      );
-    } else if (!isLoaded) {
-      return (
-        <Container>
-          <div>loading...</div>
-        </Container>
-      );
+    if (this.state.pageName ==="search") {
+      <Search changePage={this.changePage}></Search>
     } else {
-      return (
-        <><div className="App">
-          <header className="App-header">
-            <Container className="mt-3">
-              <Row>{currentPics.map(this.getPhoto)}</Row>
-            </Container>
-          </header>
-        </div><div className="w-full flex justify-around">
-            {
-              pageNumbers.map((pageNum, index) => (
-                <span key={index} className={pageNum === this.state.currentPage ? "cursor-pointer flex items-center justify-center w-12 h-12 border-2 rounded-full bg-blue-500 text-white" : "cursor-pointer flex items-center justify-center w-12 h-12 border-2 rounded-full"} onClick={() => { setPage(pageNum) }}>
-                  {pageNum}
-                </span>
-              ))
-            }
-          </div></>
-      );
+      if (error) {
+        //Caught an Error with the API fetch
+        return (
+          <Container>
+            <div>Error: {error.message} </div>
+          </Container>
+        );
+      } else if (!isLoaded) {
+        //Is Loading
+        return (
+          <Container>
+            <div>loading...</div>
+          </Container>
+        );
+      } else {
+        //Loaded Photo Data and Pagination
+        return (
+          
+          <>
+          <Navigation changePage={this.changePage}></Navigation>
+          <div className="App">
+            <header className="App-header">
+            
+              <Container className="mt-3">
+                <Row>{currentPics.map(this.getPhoto)}</Row>
+              </Container>
+            </header>
+          </div><div className="w-full flex justify-around">
+              {
+                pageNumbers.map((pageNum, index) => (
+                  <span key={index} className={pageNum === this.state.currentPage ? "cursor-pointer flex items-center justify-center w-12 h-12 border-2 rounded-full bg-blue-500 text-white" : "cursor-pointer flex items-center justify-center w-12 h-12 border-2 rounded-full"} onClick={() => { setPage(pageNum) }}>
+                    {pageNum}
+                  </span>
+                ))
+              }
+            </div></>
+        );
+      }
     }
-
-
   }
 }
 
