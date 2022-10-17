@@ -22,6 +22,7 @@ class App extends React.Component {
       error: null,
       currentPage: 1,
       picsPerPage: 10,
+      pageName: "",
     };
   }
 
