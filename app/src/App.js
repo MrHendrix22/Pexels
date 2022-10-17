@@ -8,7 +8,7 @@ import Search from "./components/Search";
 
 const client = createClient(
   //hide api key
- 
+  "563492ad6f91700001000001825382c3f9f54537b004bec5091b15b1"
 );
 
 class App extends React.Component {
@@ -30,7 +30,7 @@ class App extends React.Component {
     this.fetchPhotos();
   }
   fetchPhotos = () => {
-    
+
     client.photos.curated({ per_page: 80 }).then(
       (photo) => {
         this.setState({
@@ -55,11 +55,11 @@ class App extends React.Component {
     );
   };
 
-  changePage = (pageName, title="Nature") => {
-     this.setState({
+  changePage = (pageName, title = "Nature") => {
+    this.setState({
       pageName: pageName,
       title: title,
-     })
+    })
   }
 
   render() {
@@ -77,8 +77,10 @@ class App extends React.Component {
     const setPage = (pageNum) => {
       this.setState({ currentPage: pageNum })
     }
-    if (this.state.pageName ==="search") {
-      <Search changePage={this.changePage}></Search>
+    if (this.state.pageName === "search") {
+      return (
+        <Search changePage={this.changePage}></Search>
+      )
     } else {
       if (error) {
         //Caught an Error with the API fetch
@@ -97,17 +99,16 @@ class App extends React.Component {
       } else {
         //Loaded Photo Data and Pagination
         return (
-          
           <>
-          <Navigation changePage={this.changePage}></Navigation>
-          <div className="App">
-            <header className="App-header">
-            
-              <Container className="mt-3">
-                <Row>{currentPics.map(this.getPhoto)}</Row>
-              </Container>
-            </header>
-          </div><div className="w-full flex justify-around">
+            <Navigation changePage={this.changePage}></Navigation>
+            <div className="App">
+              <header className="App-header">
+
+                <Container className="mt-3">
+                  <Row>{currentPics.map(this.getPhoto)}</Row>
+                </Container>
+              </header>
+            </div><div className="w-full flex justify-around">
               {
                 pageNumbers.map((pageNum, index) => (
                   <span key={index} className={pageNum === this.state.currentPage ? "cursor-pointer flex items-center justify-center w-12 h-12 border-2 rounded-full bg-blue-500 text-white" : "cursor-pointer flex items-center justify-center w-12 h-12 border-2 rounded-full"} onClick={() => { setPage(pageNum) }}>
